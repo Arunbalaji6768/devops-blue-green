@@ -1,0 +1,60 @@
+# BLUE DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-app-blue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devops-app
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: devops-app
+        version: blue
+    spec:
+      containers:
+      - name: devops-app
+        image: arunbalaji6768/devops-app:latest
+        ports:
+        - containerPort: 3000
+---
+# GREEN DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-app-green
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devops-app
+      version: green
+  template:
+    metadata:
+      labels:
+        app: devops-app
+        version: green
+    spec:
+      containers:
+      - name: devops-app
+        image: arunbalaji6768/devops-app:latest
+        ports:
+        - containerPort: 3000
+---
+# THE ROUTER (Service)
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-app-service
+spec:
+  selector:
+    app: devops-app
+    version: blue  # Initially pointing to Blue
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: NodePort
